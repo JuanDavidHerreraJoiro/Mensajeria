@@ -5,17 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<Post>> listarPost(http.Client client) async {
-  //final response =
-  //    await client.get('https://desarolloweb2021a.000webhostapp.com/API/listarnotas.php');
-  //var id = "2";
   final response = await http.get(Uri.parse(
       'https://desarolloweb2021a.000webhostapp.com/API/listarmensajeros.php'));
 
-  // Usa la función compute para ejecutar parsePhotos en un isolate separado
   return compute(pasaraListas, response.body);
 }
 
-// Una función que convierte el body de la respuesta en un List<Photo>
 List<Post> pasaraListas(String responseBody) {
   final pasar = json.decode(responseBody).cast<Map<String, dynamic>>();
 
@@ -58,7 +53,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -90,9 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text('Listado Mensajeros Juan Herrera Joiro'),
       ),
-
       body: getInfo(context),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
@@ -101,25 +93,20 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         tooltip: 'Refrescar',
         child: Icon(Icons.refresh),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
 
 Widget getInfo(BuildContext context) {
   return FutureBuilder(
-    future: listarPost(http
-        .Client()), //En esta línea colocamos el el objeto Future que estará esperando una respuesta
+    future: listarPost(http.Client()),
     builder: (BuildContext context, AsyncSnapshot snapshot) {
       switch (snapshot.connectionState) {
-
-        //En este case estamos a la espera de la respuesta, mientras tanto mostraremos el loader
         case ConnectionState.waiting:
           return Center(child: CircularProgressIndicator());
-
         case ConnectionState.done:
           if (snapshot.hasError) return Text('Error: ${snapshot.error}');
-          // print(snapshot.data);
           return snapshot.data != null
               ? Vistamensajeros(posts: snapshot.data)
               : Text('Sin Datos');
@@ -145,8 +132,8 @@ class Vistamensajeros extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => Perfilmensajero(
-                          perfil: posts, idperfil: posicion)));
+                      builder: (BuildContext context) =>
+                          Perfilmensajero(perfil: posts, idperfil: posicion)));
             },
             leading: Container(
               padding: EdgeInsets.all(5.0),
